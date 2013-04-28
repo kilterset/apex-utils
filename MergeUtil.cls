@@ -56,36 +56,35 @@ public with sharing class MergeUtil {
 		List<SObject> sobjectList = QueryUtil.query(queryStr);
 		if(sobjectList.size() != 1) {
 			throw new MergeException('Record with Id \'' + recordId + '\' does not exist (sObject type is ' + typeName);
-					}
-					SObject record = sobjectList[0];
+		}
+		SObject record = sobjectList[0];
 
-					Schema.SObjectType sobjectType = Schema.getGlobalDescribe().get(typeName);
-					Map<String, Schema.SObjectField> fieldMap = sobjectType.getDescribe().fields.getMap();
+		Schema.SObjectType sobjectType = Schema.getGlobalDescribe().get(typeName);
+		Map<String, Schema.SObjectField> fieldMap = sobjectType.getDescribe().fields.getMap();
 
-					for(Schema.SObjectField f : fieldMap.values()) {
-					Schema.DescribeFieldResult describeField = f.getDescribe();
-					String fieldName = describeField.getName();
-					Object fieldVal = record.get(fieldName);
-					String strVal = null;
+		for(Schema.SObjectField f : fieldMap.values()) {
+		Schema.DescribeFieldResult describeField = f.getDescribe();
+		String fieldName = describeField.getName();
+		Object fieldVal = record.get(fieldName);
+		String strVal = null;
 
-					// If this field is a Date/time, format it in EST:
-					if(describeField.getType() == Schema.DisplayType.DateTime) {
-					if(fieldVal != null) {
-					Datetime dt = (Datetime)fieldVal;
-					strVal = dt.format('yyyy-MM-dd HH:mm:ss', 'America/New_York');
-					} else {
-					strVal = '';
-					}
-					} else {
-						strVal = fieldVal != null ? String.valueOf(fieldVal) : '';
-					}
+		// If this field is a Date/time, format it in EST:
+		if(describeField.getType() == Schema.DisplayType.DateTime) {
+		if(fieldVal != null) {
+		Datetime dt = (Datetime)fieldVal;
+		strVal = dt.format('yyyy-MM-dd HH:mm:ss', 'America/New_York');
+		} else {
+		strVal = '';
+		}
+		} else {
+			strVal = fieldVal != null ? String.valueOf(fieldVal) : '';
+		}
 
-					// Merge field:
-					merged = merged.replace('{!' + typeName + '.' + fieldName  + '}', strVal);
-						String link = URL.getSalesforceBaseUrl().toExternalForm() + '/' + record.Id;
-						merged = merged.replace('{!' + typeName + '.Link}', link);
-					}
-					return merged;
-					}
+		// Merge field:
+		merged = merged.replace('{!' + typeName + '.' + fieldName  + '}', strVal);
+			String link = URL.getSalesforceBaseUrl().toExternalForm() + '/' + record.Id;
+			merged = merged.replace('{!' + typeName + '.Link}', link);
+		}
+		return merged;
 	}
 }
