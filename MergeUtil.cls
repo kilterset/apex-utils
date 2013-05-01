@@ -10,6 +10,8 @@ public with sharing class MergeUtil {
 	public class MergeException extends Exception {}
 
 	public static final Integer MAX_RECORDS = 10;
+	public static final String  DATE_FORMAT = 'EEEE, MMMM d, yyyy';
+	// public static final String  DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 	/**
 	 * This static method returns a merged string given a string with merge fields and one or more record Ids.
@@ -70,12 +72,20 @@ public with sharing class MergeUtil {
 
 		// If this field is a Date/time, format it in EST:
 		if(describeField.getType() == Schema.DisplayType.DateTime) {
-		if(fieldVal != null) {
-		Datetime dt = (Datetime)fieldVal;
-		strVal = dt.format('yyyy-MM-dd HH:mm:ss', 'America/New_York');
-		} else {
-		strVal = '';
-		}
+			if(fieldVal != null) {
+				Datetime dt = (Datetime)fieldVal;
+				strVal = dt.format(DATE_FORMAT, 'America/New_York');
+			} else {
+				strVal = '';
+			}
+		} else if(describeField.getType() == Schema.DisplayType.Date) {
+			if(fieldVal != null) {
+				Date d = (Date)fieldVal;
+				Datetime dt = Datetime.newInstance(d, Time.newInstance(0, 0, 0, 0));
+				strVal = dt.format(DATE_FORMAT, 'America/New_York');
+			} else {
+				strVal = '';
+			}
 		} else {
 			strVal = fieldVal != null ? String.valueOf(fieldVal) : '';
 		}
