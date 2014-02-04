@@ -12,7 +12,7 @@ public class RandomUtil {
      * @param  upper the upper bound (exclusive) for random number generation
      * @return       an integer greater than or equal to lower, and less than upper
      */
-    public  Integer getRandomInteger (Integer lower, Integer upper)
+    public static Integer getRandomInteger (Integer lower, Integer upper)
     {
         return (Integer) (Math.floor(Math.random() * (upper - lower)) + lower);
     }
@@ -31,7 +31,7 @@ public class RandomUtil {
      * 
      * @param listToShuffle A list of objects to shuffle
      */
-    public void shuffle(List<Object> listToShuffle){
+    public static void shuffle(List<Object> listToShuffle){
         for(Integer i = listToShuffle.size() - 1; i >= 1; i--) {
             Integer randPos = getRandomInt(0,i);
             Object swapTemp = listToShuffle[randPos];
