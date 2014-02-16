@@ -14,7 +14,7 @@ public class RandomUtil {
      */
     public static Integer getRandomInteger (Integer lower, Integer upper)
     {
-        return (Integer) (Math.floor(Math.random() * (upper - lower)) + lower);
+        return (Math.random() * (upper - lower)).intValue() + lower;
     }
 
     /**
